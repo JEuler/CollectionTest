@@ -16,6 +16,7 @@ public class AddIterateRemoveTest {
     static final int RUNS_TIME_MS = 10 * 1000;
     static final int SIZE = 1000 * 1000;
     static final int[] INTS = new int[SIZE];
+    static final Random rand = new Random();
 
     static {
         for (int i = 0; i < SIZE; i++)
@@ -41,14 +42,15 @@ public class AddIterateRemoveTest {
             long removing = 0;
             long iterating = 0;
             long searching = 0;
+            long random = 0;
 
             int runs = 0;
             long endTime = System.currentTimeMillis() + RUNS_TIME_MS;
             do {
                 runs++;
+
                 long start = System.nanoTime() / 1000;
                 testAdd(ints, size);
-
                 adding += System.nanoTime() / 1000 - start;
 
                 start = System.nanoTime() / 1000;
@@ -57,12 +59,12 @@ public class AddIterateRemoveTest {
                 iterating += System.nanoTime() / 1000 - start;
 
                 start = System.nanoTime() / 1000;
-                testRemove(ints, size);
-                removing += (System.nanoTime() / 1000 - start);
-
-                start = System.nanoTime() / 1000;
                 testSearch(ints);
                 searching += (System.nanoTime() / 1000 - start);
+
+                start = System.nanoTime() / 1000;
+                testRemove(ints, size);
+                removing += (System.nanoTime() / 1000 - start);
 
                 ints.clear();
             } while (endTime > System.currentTimeMillis());
@@ -71,8 +73,8 @@ public class AddIterateRemoveTest {
                     + "</td><td aligned=\"right\">" + String.format("%,d", size)
                     + "</td><td aligned=\"right\">" + format(10 * adding / runs)
                     + "</td><td aligned=\"right\">" + format(iterating / runs)
-                    + "</td><td aligned=\"right\">" + format(10 * removing / runs)
                     + "</td><td aligned=\"right\">" + format(10 * searching / runs)
+                    + "</td><td aligned=\"right\">" + format(10 * removing / runs)
                     + "</td></tr>"
             );
         }
@@ -101,12 +103,11 @@ public class AddIterateRemoveTest {
     }
 
     private static void testSearch(Collection<Integer> ints) {
-        long searchEl = ints.size() - 1;
+        int searchEl = ints.size() - 1;
         ints.contains(searchEl);
     }
 
     private void testRemove(Collection<Integer> ints, int size) {
-        // удаляем как спереди, так и сзади.
         for (int i = 0; i < size; i++) {
             ints.remove(INTS[i]);
         }
