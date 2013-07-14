@@ -40,6 +40,7 @@ public class AddIterateRemoveTest {
             long adding = 0;
             long removing = 0;
             long iterating = 0;
+            long searching = 0;
 
             int runs = 0;
             long endTime = System.currentTimeMillis() + RUNS_TIME_MS;
@@ -59,6 +60,10 @@ public class AddIterateRemoveTest {
                 testRemove(ints, size);
                 removing += (System.nanoTime() - start) * 2;
 
+                start = System.nanoTime();
+                testSearching(ints);
+                searching += (System.nanoTime() - start) * 2;
+
                 ints.clear();
             } while (endTime > System.currentTimeMillis());
             System.out.println("<tr><td>" + collectionName
@@ -66,13 +71,18 @@ public class AddIterateRemoveTest {
                     + "</td><td aligned=\"right\">" + format(10 * adding / runs / size)
                     + "</td><td aligned=\"right\">" + format(iterating / runs / size)
                     + "</td><td aligned=\"right\">" + format(10 * removing / runs / size)
+                    + "</td><td aligned=\"right\">" + format(10 * searching / runs / size)
                     + "</td></tr>"
             );
         }
     }
 
     private String format(long l) {
-        return l < 1000 ? "" + (l / 10.0) : l < 10000 ? "" + l / 10 : String.format("%,d", l / 10);
+        return l < 1000 ?
+                "" + (l / 10.0) :
+                l < 10000 ?
+                        "" + l / 10
+                        : String.format("%,d", l / 10);
     }
 
     private static void testAdd(Collection<Integer> ints, int size) {
@@ -87,6 +97,11 @@ public class AddIterateRemoveTest {
         for (Integer i : ints)
             sum += i;
         return sum;
+    }
+
+    private static void testSearching(Collection<Integer> ints) {
+        long searchEl = ints.size() - 1;
+        ints.contains(searchEl);
     }
 
     private void testRemove(Collection<Integer> ints, int size) {
