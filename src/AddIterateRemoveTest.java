@@ -14,7 +14,7 @@ import java.util.*;
 
 public class AddIterateRemoveTest {
     static final int RUNS_TIME_MS = 10 * 1000;
-    static final int SIZE = 100 * 1000;
+    static final int SIZE = 1000 * 1000;
     static final int[] INTS = new int[SIZE];
 
     static {
@@ -46,32 +46,33 @@ public class AddIterateRemoveTest {
             long endTime = System.currentTimeMillis() + RUNS_TIME_MS;
             do {
                 runs++;
-                long start = System.nanoTime();
+                long start = System.nanoTime() / 1000;
                 testAdd(ints, size);
 
-                adding += System.nanoTime() - start;
+                adding += System.nanoTime() / 1000 - start;
 
-                start = System.nanoTime();
+                start = System.nanoTime() / 1000;
                 for (int repeat = 0; repeat < 100; repeat++)
                     testIterate(ints);
-                iterating += System.nanoTime() - start;
+                iterating += System.nanoTime() / 1000 - start;
 
-                start = System.nanoTime();
+                start = System.nanoTime() / 1000;
                 testRemove(ints, size);
-                removing += (System.nanoTime() - start) * 2;
+                removing += (System.nanoTime() / 1000 - start);
 
-                start = System.nanoTime();
-                testSearching(ints);
-                searching += (System.nanoTime() - start) * 2;
+                start = System.nanoTime() / 1000;
+                testSearch(ints);
+                searching += (System.nanoTime() / 1000 - start);
 
                 ints.clear();
             } while (endTime > System.currentTimeMillis());
+
             System.out.println("<tr><td>" + collectionName
                     + "</td><td aligned=\"right\">" + String.format("%,d", size)
-                    + "</td><td aligned=\"right\">" + format(10 * adding / runs / size)
-                    + "</td><td aligned=\"right\">" + format(iterating / runs / size)
-                    + "</td><td aligned=\"right\">" + format(10 * removing / runs / size)
-                    + "</td><td aligned=\"right\">" + format(10 * searching / runs / size)
+                    + "</td><td aligned=\"right\">" + format(10 * adding / runs)
+                    + "</td><td aligned=\"right\">" + format(iterating / runs)
+                    + "</td><td aligned=\"right\">" + format(10 * removing / runs)
+                    + "</td><td aligned=\"right\">" + format(10 * searching / runs)
                     + "</td></tr>"
             );
         }
@@ -99,16 +100,15 @@ public class AddIterateRemoveTest {
         return sum;
     }
 
-    private static void testSearching(Collection<Integer> ints) {
+    private static void testSearch(Collection<Integer> ints) {
         long searchEl = ints.size() - 1;
         ints.contains(searchEl);
     }
 
     private void testRemove(Collection<Integer> ints, int size) {
         // удаляем как спереди, так и сзади.
-        for (int i = 0; i < size / 2; i++) {
+        for (int i = 0; i < size; i++) {
             ints.remove(INTS[i]);
-            ints.remove(INTS[size - i - 1]);
         }
     }
 }
